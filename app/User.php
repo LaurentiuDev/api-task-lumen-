@@ -50,6 +50,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     	'id',
         'name',
         'email',
+        'status',
         'role_id'
     ];
 

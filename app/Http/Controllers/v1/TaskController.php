@@ -5,8 +5,11 @@ namespace App\Http\Controllers\v1;
 use App\Http\Controllers\Controller;
 use App\Role;
 use App\Task;
+use App\Notification;
+use App\Log;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use App\User;
 
 /**
  * Class TaskController
@@ -52,6 +55,7 @@ class TaskController extends Controller
             $rules = [
                 'name' => 'required',
                 'description' => 'required',
+                'status'=> 'required',
                 'assign' => 'required|exists:users,id'
             ];
 
@@ -65,9 +69,15 @@ class TaskController extends Controller
 
             $task->name = $request->name;
             $task->description = $request->description;
-            $task->status = Task::STATUS_ASSIGNED;
+            $task->status = $request->status ? $request->status : Task::STATUS_ASSIGNED;
             $task->user_id = $user->id;
             $task->assign = $request->assign;
+
+            $notification = new Notification();
+            $notification->user_id = $task->assign;
+            $notification->message = $user->name . ' has assigned you a task';
+            $notification->save();
+           
 
             $task->save();
 
@@ -96,6 +106,23 @@ class TaskController extends Controller
                 return $this->returnError('You don\'t have permission to update this task');
             }
 
+            $status = '';
+            switch ($task->status){
+                case 0 : $status = 'Assigned' ; break;
+                case 1 : $status = 'In progress' ; break;
+                case 2 : $status = 'Not done' ; break;
+                case 3 : $status = 'Done'; break;
+            }
+
+            $users = User::where('id',$task->assign)->get()->first();
+
+            $log = new Log([
+                'task_id' => $id,
+                'user_id' => $task->user_id,
+                'type' => $user->role_id,
+                'old_value' => 'Status : ' . $status . ' . Assign to ' . $users->name
+                ]);
+
             if ($request->has('name')) {
                 $task->name = $request->name;
             }
@@ -110,7 +137,23 @@ class TaskController extends Controller
 
             if ($request->has('assign')) {
                 $task->assign = $request->assign;
+
+                $notification = new Notification();
+                $notification->user_id = $task->assign;
+                $notification->message = $user->name . ' has assigned you a task';
+                $notification->save();
             }
+
+            $status = '';
+            switch ($task->status){
+                case 0 : $status = 'Assigned' ; break;
+                case 1 : $status = 'In progress' ; break;
+                case 2 : $status = 'Not done' ; break;
+                case 3 : $status = 'Done'; break;
+            }
+            $users = User::where('id',$task->assign)->get()->first();
+            $log->new_value= 'Status : ' . $status . ' . Assign to ' . $users->name;
+            $log->save();
 
             $task->save();
 

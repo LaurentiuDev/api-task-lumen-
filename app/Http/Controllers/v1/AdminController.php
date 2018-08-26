@@ -24,7 +24,8 @@ class AdminController extends Controller
     public function getUsers()
     {
         try {
-            $users = User::all();
+            
+            $users = User::paginate(10);
 
             return $this->returnSuccess($users);
         } catch (\Exception $e) {

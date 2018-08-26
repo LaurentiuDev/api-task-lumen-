@@ -27,6 +27,17 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
+
+     public function getAll(){
+        try {
+            $users = User::all();
+
+            return $this->returnSuccess($users);
+        } catch (\Exception $e) {
+            return $this->returnError($e->getMessage());
+        }
+     }
+
     public function login(Request $request, User $userModel, JwtToken $jwtToken)
     {
         try {

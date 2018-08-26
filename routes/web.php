@@ -50,9 +50,21 @@ $router->group(['namespace' => API_VERSION, 'prefix' => API_VERSION, 'middleware
     });
 
     $router->get('/tasks', ['uses' => 'TaskController@getAll']);
-    $router->group(['prefix' => 'user'], function () use ($router) {
+    $router->group(['prefix' => 'task'], function () use ($router) {
         $router->post('/', ['uses' => 'TaskController@create']);
         $router->patch('/{id}', ['uses' => 'TaskController@update']);
         $router->delete('/{id}', ['uses' => 'TaskController@delete']);
     });
+
+    $router->get('/comments',['uses' => 'CommentController@getAll']);
+    $router->group(['prefix' => 'user'], function () use ($router) {
+        $router->get('/users',['uses' => 'UserController@getAll']);
+        $router->post('/addComment/{id}', ['uses' => 'CommentController@create']);
+    });
+
+    $router->get('/logs',['uses' => 'LogsController@getAll']);
+    $router->get('/notifications',['uses' => 'NotificationsController@getAll']);
+
+    $router->get('/getCountNotifications/{user_id}' , ['uses' => 'CountNotificationsController@getCountNotificationsUser']);
+    $router->post('/currentNotifications' , ['uses' => 'CountNotificationsController@currentNotificationsRead']);
 });
