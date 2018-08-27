@@ -9,7 +9,19 @@ use App\Role;
 use App\Task;
 use App\Comment;
 
+/**
+ * Class CommentController
+ *
+ * @package App\Http\Controllers\v1
+ */
+
 class CommentController extends Controller{
+
+    /**
+     * Get comment list
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
 
     public function getAll() {
         try {
@@ -20,6 +32,16 @@ class CommentController extends Controller{
             return $this->returnError($e->getMessage());
         }
     }
+
+    /**
+     * Create a comment
+     *
+     * @param Request $request
+     * 
+     * @param $id
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
 
     public function create($id,Request $request) {
         try {

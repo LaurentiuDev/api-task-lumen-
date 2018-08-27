@@ -18,12 +18,9 @@ use App\Mail\LinkReset;
  */
 class UserController extends Controller
 {
+    
     /**
-     * Login User
-     *
-     * @param Request $request
-     * @param User $userModel
-     * @param JwtToken $jwtToken
+     * Get users list
      *
      * @return \Illuminate\Http\JsonResponse
      */
@@ -37,6 +34,16 @@ class UserController extends Controller
             return $this->returnError($e->getMessage());
         }
      }
+
+     /**
+     * Login User
+     *
+     * @param Request $request
+     * @param User $userModel
+     * @param JwtToken $jwtToken
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
 
     public function login(Request $request, User $userModel, JwtToken $jwtToken)
     {

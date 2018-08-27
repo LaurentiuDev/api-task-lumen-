@@ -55,7 +55,7 @@ class TaskController extends Controller
             $rules = [
                 'name' => 'required',
                 'description' => 'required',
-                'status'=> 'required',
+                'status' => 'required',
                 'assign' => 'required|exists:users,id'
             ];
 
@@ -77,7 +77,7 @@ class TaskController extends Controller
             $notification->user_id = $task->assign;
             $notification->message = $user->name . ' has assigned you a task';
             $notification->save();
-           
+
 
             $task->save();
 
@@ -105,23 +105,31 @@ class TaskController extends Controller
             if ($user->role_id === Role::ROLE_USER && $user->id !== $task->assign) {
                 return $this->returnError('You don\'t have permission to update this task');
             }
-
+            $old_status = $task->status;
+            $old_assign = $task->assign;
             $status = '';
-            switch ($task->status){
-                case 0 : $status = 'Assigned' ; break;
-                case 1 : $status = 'In progress' ; break;
-                case 2 : $status = 'Not done' ; break;
-                case 3 : $status = 'Done'; break;
+            switch ($task->status) {
+                case Task::STATUS_ASSIGNED:
+                    $status = 'Assigned';
+                    break;
+                case Task::STATUS_IN_PROGRESS:
+                    $status = 'In progress';
+                    break;
+                case Task::STATUS_NOT_DONE:
+                    $status = 'Not done';
+                    break;
+                case Task::STATUS_DONE:
+                    $status = 'Done';
+                    break;
             }
 
-            $users = User::where('id',$task->assign)->get()->first();
+            $users = User::where('id', $task->assign)->get()->first();
 
             $log = new Log([
                 'task_id' => $id,
                 'user_id' => $task->user_id,
-                'type' => $user->role_id,
                 'old_value' => 'Status : ' . $status . ' . Assign to ' . $users->name
-                ]);
+            ]);
 
             if ($request->has('name')) {
                 $task->name = $request->name;
@@ -132,10 +140,18 @@ class TaskController extends Controller
             }
 
             if ($request->has('status')) {
+                if ($old_status !== $request->status) {
+                    $log->type = Log::STATUS;
+                }
                 $task->status = $request->status;
+
             }
 
             if ($request->has('assign')) {
+                if ($old_assign !== $request->assign) {
+                    $log->type = Log::ASSIGN;
+                }
+
                 $task->assign = $request->assign;
 
                 $notification = new Notification();
@@ -145,14 +161,22 @@ class TaskController extends Controller
             }
 
             $status = '';
-            switch ($task->status){
-                case 0 : $status = 'Assigned' ; break;
-                case 1 : $status = 'In progress' ; break;
-                case 2 : $status = 'Not done' ; break;
-                case 3 : $status = 'Done'; break;
+            switch ($task->status) {
+                case Task::STATUS_ASSIGNED:
+                    $status = 'Assigned';
+                    break;
+                case Task::STATUS_IN_PROGRESS:
+                    $status = 'In progress';
+                    break;
+                case Task::STATUS_NOT_DONE:
+                    $status = 'Not done';
+                    break;
+                case Task::STATUS_DONE:
+                    $status = 'Done';
+                    break;
             }
-            $users = User::where('id',$task->assign)->get()->first();
-            $log->new_value= 'Status : ' . $status . ' . Assign to ' . $users->name;
+            $users = User::where('id', $task->assign)->get()->first();
+            $log->new_value = 'Status : ' . $status . ' . Assign to ' . $users->name;
             $log->save();
 
             $task->save();

@@ -8,8 +8,21 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\CountNotification;
 
+/**
+ * Class CountNotificationsController
+ *
+ * @package App\Http\Controllers\v1
+ */
+
 class CountNotificationsController extends Controller
 {
+    /**
+     * Get count of user notifications
+     * 
+     * @param $user_id
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
 
     public function getCountNotificationsUser($user_id){
         try{
@@ -22,6 +35,14 @@ class CountNotificationsController extends Controller
             return $this->returnError($e->getMessage());
         }
     }
+
+    /**
+     * Set number of notifications seen for specific user
+     * 
+     * @param Request $request
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
 
     public function currentNotificationsRead(Request $request){
         try {

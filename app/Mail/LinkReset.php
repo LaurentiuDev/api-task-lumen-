@@ -7,6 +7,12 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
+/**
+ * Class LinkReset
+ *
+ * @package App\Mail
+ */
+
 class LinkReset extends Mailable
 {
     use Queueable, SerializesModels;

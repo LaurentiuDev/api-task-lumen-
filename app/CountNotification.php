@@ -5,18 +5,20 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class Notification
+ * Class CountNotification
  *
  * @package App
  */
 class CountNotification extends Model
 {
+    
+    public $table = 'count_notification';
+
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
-    public $table = 'count_notification';
 
     protected $fillable = [
         'user_id',

@@ -7,9 +7,19 @@ use App\Notification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
+/**
+ * Class NotificationsController
+ *
+ * @package App\Http\Controllers\v1
+ */
 
 class NotificationsController extends Controller
 {
+    /**
+     * Get notifications list
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function getAll() {
         try {
             $user = $this->validateSession();

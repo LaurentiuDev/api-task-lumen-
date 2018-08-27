@@ -11,11 +11,18 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Log extends Model
 {
+     /** @var int */
+     const STATUS = 1 ;
+
+      /** @var int */
+      const ASSIGN = 2 ;
+
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
+ 
     protected $fillable = [
         'task_id',
         'user_id',
