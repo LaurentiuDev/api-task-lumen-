@@ -18,14 +18,15 @@ use App\Mail\LinkReset;
  */
 class UserController extends Controller
 {
-    
+
     /**
      * Get users list
      *
      * @return \Illuminate\Http\JsonResponse
      */
 
-     public function getAll(){
+    public function getAll()
+    {
         try {
             $users = User::all();
 
@@ -33,9 +34,9 @@ class UserController extends Controller
         } catch (\Exception $e) {
             return $this->returnError($e->getMessage());
         }
-     }
+    }
 
-     /**
+    /**
      * Login User
      *
      * @param Request $request
@@ -221,6 +222,17 @@ class UserController extends Controller
     public function update(Request $request)
     {
         try {
+
+            $rules = [
+                'name' => 'min:2',
+                'password' => 'min:4'
+            ];
+
+            $validator = Validator::make($request->all(), $rules);
+
+            if (!$validator->passes()) {
+                return $this->returnBadRequest('Please fill all required fields');
+            }
             $user = $this->validateSession();
 
             if ($request->has('name')) {
